@@ -49,7 +49,7 @@ Edit the `.env` file with your database and RabbitMQ configuration.
 4. Start the application
 npm run start
 
-6. Access Swagger documentation
+5. Access Swagger documentation
 http://localhost:3000/api/docs
 
 
