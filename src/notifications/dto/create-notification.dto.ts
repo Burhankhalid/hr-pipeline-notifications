@@ -5,24 +5,24 @@ import { NotificationStatus, NotificationType } from '../interfaces/notification
 export class CreateNotificationDto {
   @ApiProperty({ description: 'The title of the notification' })
   @IsString()
-  title: string;
+  title?: string;
 
   @ApiProperty({ description: 'The content of the notification' })
   @IsString()
-  content: string;
+  content?: string;
 
   @ApiProperty({ description: 'The status of the notification', enum: NotificationStatus })
   @IsEnum(NotificationStatus)
-  status: NotificationStatus;
+  status?: NotificationStatus;
 
   @ApiProperty({ description: 'The type of the notification', enum: NotificationType })
   @IsEnum(NotificationType)
-  type: NotificationType;
+  type?: NotificationType;
 
   @ApiProperty({ description: 'List of recipient IDs for the notification' })
   @IsArray()
   @IsString({ each: true })
-  recipients: string[];
+  recipients?: string[];
 
   @ApiProperty({ description: 'Timestamp of when the notification was created', required: false })
   @IsOptional()
