@@ -15,6 +15,8 @@ import {
   import { INotificationChannel } from '../channels/interfaces/channel.interface';
   import { CreateNotificationDto } from './dto/create-notification.dto';
   import { NotificationResponseDto } from './dto/notification-response.dto';
+  import { EmailChannelService } from '../channels/email/email.service';
+  import { InAppChannelService } from '../channels/in-app/in-app.service';
   
   @Injectable()
   export class NotificationsService {
@@ -24,15 +26,16 @@ import {
     constructor(
       private readonly notificationRepository: NotificationRepository,
       private readonly deliveryAttemptRepository: DeliveryAttemptRepository,
+      private readonly emailChannelService: EmailChannelService,
+      private readonly inAppChannelService: InAppChannelService,
       private readonly retryService: RetryService,
-      private readonly moduleRef: ModuleRef,
     ) {}
   
     async onModuleInit() {
-      this.channels = await Promise.all([
-        this.moduleRef.get('EmailChannelService', { strict: false }),
-        this.moduleRef.get('InAppChannelService', { strict: false }),
-      ]);
+      this.channels = [
+        this.emailChannelService,
+        this.inAppChannelService,
+      ];
     }
   
     async send(notification: INotification): Promise<void> {

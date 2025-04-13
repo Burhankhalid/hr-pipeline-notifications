@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { EventsModule } from './events/events.module';
 import { ConfigModule } from '@nestjs/config';
 import { LoggerModule } from 'nestjs-pino';
@@ -10,6 +11,10 @@ import { TemplatesModule } from './templates/templates.module';
 import { RetryModule } from './retry/retry.module';
 import { CommonModule } from './common/common.module';
 import { RabbitMQModule } from '@golevelup/nestjs-rabbitmq';
+import { Notification } from './notifications/entities/notification.entity';
+import { Template } from './templates/entities/template.entity';
+import { NotificationDeliveries } from './notifications/entities/notification-deliveries.entity';
+import { NotificationRule } from './notifications/entities/notification-rule.entity';
 
 @Module({
   imports: [
@@ -26,7 +31,7 @@ import { RabbitMQModule } from '@golevelup/nestjs-rabbitmq';
     },
   }),
   RabbitMQModule.forRoot({
-    uri: process.env.RABBITMQ_URL? process.env.RABBITMQ_URL : "amqp://username:password@localhost:5672", // RabbitMQ URI
+    uri: process.env.RABBITMQ_URL? process.env.RABBITMQ_URL : "amqp://guest:guest@localhost:5672", // RabbitMQ URI
     exchanges: [
       {
         name: 'hiring_pipeline', // Exchange name
@@ -37,6 +42,16 @@ import { RabbitMQModule } from '@golevelup/nestjs-rabbitmq';
   ConfigModule.forRoot({
     isGlobal: true,
     envFilePath: '.env', 
+  }),
+  TypeOrmModule.forRoot({
+    type: 'postgres',  // Specify your DB type, like 'postgres', 'mysql', etc.
+    host: 'localhost', // DB host
+    port: 5432,        // DB port
+    username: 'postgres',  // DB username
+    password: 'admin',  // DB password
+    database: 'notifications_service',  // DB name
+    entities: [Notification, Template, Event, NotificationDeliveries, NotificationRule], // Add your entities here
+    synchronize: true, // Sync DB (use false in production)
   }),
   EventsModule, 
   NotificationsModule, 
