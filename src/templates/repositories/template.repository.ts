@@ -40,6 +40,24 @@ export class TemplateRepository {
     return template;
   }
 
+  async create(template: Partial<Template>): Promise<Template> {
+    const newTemplate = this.templateRepository.create(template);
+    return this.templateRepository.save(newTemplate);
+  }
+
+  async update(id: string, updateData: Partial<Template>): Promise<Template> {
+    const template = await this.findById(id);
+    
+    // Update the template properties
+    Object.assign(template, updateData);
+    
+    return this.templateRepository.save(template);
+  }
+
+  async delete(id: string): Promise<void> {
+    const template = await this.findById(id);
+    await this.templateRepository.remove(template);
+  }
   
   async findByType(type: string): Promise<Template[]> {
     return this.templateRepository.find({

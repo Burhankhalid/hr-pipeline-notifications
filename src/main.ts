@@ -11,6 +11,11 @@ async function bootstrap() {
   });
   
   app.useLogger(app.get(Logger));
+
+
+  // Apply global filters and interceptors
+  app.useGlobalFilters(new HttpExceptionFilter());
+  app.useGlobalInterceptors(new LoggingInterceptor());
   
   // Global validation pipe
   app.useGlobalPipes(

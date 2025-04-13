@@ -13,6 +13,8 @@ import {
   import { RetryService } from '../retry/retry.service';
   import { ModuleRef } from '@nestjs/core';
   import { INotificationChannel } from '../channels/interfaces/channel.interface';
+  import { CreateNotificationDto } from './dto/create-notification.dto';
+  import { NotificationResponseDto } from './dto/notification-response.dto';
   
   @Injectable()
   export class NotificationsService {
@@ -180,5 +182,21 @@ import {
   
       return notification;
     }
+
+    // Create a new notification
+  async create(createNotificationDto: CreateNotificationDto): Promise<NotificationResponseDto> {
+    try {
+      // Create a new notification using TypeORM's save method
+      const newNotification = await this.notificationRepository.create(createNotificationDto);
+
+      // Save the notification to the database
+      const savedNotification = await this.notificationRepository.create(newNotification);
+
+      // Return the saved notification as a response DTO
+      return new NotificationResponseDto(savedNotification);
+    } catch (error) {
+      throw new Error(`Failed to create notification: ${error.message}`);
+    }
+  }
   }
   
